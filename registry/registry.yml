@@ -6,6 +6,9 @@ metadata:
     app: registry
   namespace: docker-registry
 spec:
+  nodeSelector:
+    node-role.kubernetes.io/master: ""
+
   volumes:
   - name: registry-data
     persistentVolumeClaim:

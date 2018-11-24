@@ -27,11 +27,11 @@ spec:
             - name: PROVISIONER_NAME
               value: nfs-storage
             - name: NFS_SERVER
-              value: {{10.10.10.60}}
+              value: 10.0.6.21
             - name: NFS_PATH
-              value: {{/ifs/kubernetes}}
+              value: /data/nfs
       volumes:
         - name: nfs-client-root
           nfs:
-            server: {{10.10.10.60}}
-            path: {{/ifs/kubernetes}}
+            server: 10.0.6.21
+            path: /data/nfs
