@@ -1,0 +1,12 @@
+FROM asc686f61/autositebase:1.0
+
+
+# install requirements
+COPY hello_app/requirements.txt /
+RUN pip3 install -r /requirements.txt
+
+# add code
+COPY hello_app/hello_app /code
+
+
+ENTRYPOINT  cd /code && python3 server.py

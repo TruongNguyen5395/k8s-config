@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-app
+  namespace: hello-app
+
+
+spec:
+  selector:
+    matchLabels:
+      app: hello-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hello-app
+    spec:
+      containers:
+        - name: hello-app
+          image: misadockerhub.vn:30100/misa/hello_app:1.1
+          ports:
+            - containerPort: 14000
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: hello-app
+  namespace: hello-app
+
+spec:
+  type: NodePort
+  selector:
+    app: hello-app
+  ports:
+    - name: http
+      targetPort: 14000
+      port: 14000
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: hello-app
+  namespace: hello-app
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: k8stest.misa.com.vn
+      http:
+        paths:
+          - path: /hello_app
+            backend:
+              serviceName: hello-app
+              servicePort: 14000
