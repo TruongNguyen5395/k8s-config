@@ -2,7 +2,7 @@
 
   tasks:
     - name: Create mountable dir
-      file: path=/share state=directory mode=777 owner=root group=root
+      file: path=/nfs state=directory mode=777 owner=root group=root
 
 #    - name: make sure the mount drive has a filesystem
 #      filesystem: fstype=ext4 dev={{ mountable_share_drive | default('/dev/xvdb') }}
@@ -15,6 +15,7 @@
       with_items:
         - nfs-common
         - nfs-kernel-server
+        - cifs-utils
 
     - name: copy /etc/exports
       template: src=exports.j2 dest=/etc/exports owner=root group=root

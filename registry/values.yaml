@@ -1,0 +1,10 @@
+persistence:
+  enabled: true
+  size: 3Gi
+
+service:
+  type: NodePort
+  nodePort: 30100
+nodeSelector:
+  node-role.kubernetes.io/master: ""
+
