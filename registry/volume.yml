@@ -3,11 +3,9 @@ apiVersion: v1
 metadata:
   name: registry-data
   namespace: docker-registry
-  annotations:
-    volume.beta.kubernetes.io/storage-class: "example-nfs"
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 10Gi
+      storage: 5Gi
