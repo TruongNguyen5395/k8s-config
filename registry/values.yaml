@@ -5,6 +5,7 @@ persistence:
 service:
   type: NodePort
   nodePort: 30100
+
 nodeSelector:
-  node-role.kubernetes.io/master: ""
+  kubernetes.io/hostname: vps198422
 

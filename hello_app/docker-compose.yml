@@ -1,9 +1,0 @@
-version: '3'
-services:
-  hello_app:
-    build:
-      context: .
-      dockerfile: hello_app/dockerfile
-    image: misadockerhub.vn:30100/misa/hello_app:1.1
-    ports:
-      - 14000:14000
