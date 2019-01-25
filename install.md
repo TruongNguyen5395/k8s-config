@@ -5,7 +5,7 @@ kubectl apply -f helm/rbac.yaml
 helm init --service-account tiller
 
 # Install docker registry
-helm install stable/docker-registry --name dc-repo --namespace dc-repo
+helm install stable/docker-registry --name dc-repo --namespace dc-repo -f registry/values.yaml
  
 
 # Install nfs
