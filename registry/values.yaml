@@ -7,5 +7,5 @@ service:
   nodePort: 30100
 
 nodeSelector:
-  kubernetes.io/hostname: vps198422
+  node-role.kubernetes.io/master: ""
 
