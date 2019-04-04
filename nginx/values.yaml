@@ -1,4 +1,4 @@
 controller:
   service:
     externalIPs:
-      - 167.114.98.168
+      - x.x.x.x

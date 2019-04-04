@@ -10,7 +10,7 @@ helm install stable/docker-registry --name dc-repo --namespace dc-repo -f regist
 
 # Install nfs
 ## install nfs cluster
-helm install stable/nfs-client-provisioner --set nfs.server=167.114.98.168 --set nfs.path=/nfs --name nfs --namespace nfs
+helm install stable/nfs-client-provisioner --set nfs.server=xxx.xxx.xxx --set nfs.path=/nfs --name nfs --namespace nfs
 kubectl patch storageclass nfs-client -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 
 
