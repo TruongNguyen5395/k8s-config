@@ -15,7 +15,7 @@ kubectl patch storageclass nfs-client -p '{"metadata": {"annotations":{"storagec
 
 
 # install nginx
-helm install --name nginx --namespace nginx stable/nginx-ingress -f nginx/values.yaml  <br />
+helm install --name nginx --namespace nginx stable/nginx-ingress -f nginx/values.yaml<br />
 
 #tain master
 kubectl taint nodes --all node-role.kubernetes.io/master- <br />

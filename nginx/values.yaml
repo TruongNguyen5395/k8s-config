@@ -1,4 +1,7 @@
 controller:
+  nodeSelector:
+    node-role.kubernetes.io/master: ""
+
   service:
     externalIPs:
-      - x.x.x.x
+      - 10.0.6.21
