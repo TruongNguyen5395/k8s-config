@@ -1,6 +1,6 @@
 persistence:
   enabled: true
-  size: 3Gi
+  size: 5Gi
 
 service:
   type: NodePort

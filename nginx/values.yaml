@@ -4,4 +4,4 @@ controller:
 
   service:
     externalIPs:
-      - 10.0.6.21
+      - x.x.x.x
