@@ -1,0 +1,13 @@
+k8stest:
+  children:
+    master:
+      hosts:
+        10.0.6.21:
+      vars:
+        ansible_user: nbhoa
+    worker:
+      hosts:
+        10.0.6.19:
+        10.0.6.20:
+      vars:
+        ansible_user: nbhoa
