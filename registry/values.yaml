@@ -9,3 +9,9 @@ service:
 nodeSelector:
   node-role.kubernetes.io/master: ""
 
+tolerations:
+  - key: "key"
+    operator: "Equal"
+    value: "master"
+    effect: "NoSchedule"
+
