@@ -1,9 +1,14 @@
 - hosts: all
-#  roles:
-#     - { role: vaulttec.zsh, zsh_ohmy_theme: robbyrussell, zsh_ohmy_plugins: [git, docker, docker-compose, kubectl] }
+  roles:
+     - { role: vaulttec.zsh, zsh_ohmy_theme: robbyrussell, zsh_ohmy_plugins: [git, docker, docker-compose, kubectl] }
   tasks:
+    - name: clone configs
+      become: yes
+      git:
+        repo: https://github.com/ASC689561/k8s-config.git
+        dest: /home/configs
     - name: line insert
       lineinfile:
         path: .zshrc
-        line: 'echo hahaha'
+        line: 'source /home/configs/ansible/aliases'
         insertbefore: BOF
