@@ -1,0 +1,9 @@
+- hosts: all
+#  roles:
+#     - { role: vaulttec.zsh, zsh_ohmy_theme: robbyrussell, zsh_ohmy_plugins: [git, docker, docker-compose, kubectl] }
+  tasks:
+    - name: line insert
+      lineinfile:
+        path: .zshrc
+        line: 'echo hahaha'
+        insertbefore: BOF
