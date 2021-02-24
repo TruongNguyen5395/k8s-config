@@ -31,7 +31,7 @@ read input
 if [[ $input == "y" ]]; then
     echo -n Input nfs server ip:
     read NFS_IP
-    helm install stable/nfs-client-provisioner --set nfs.server=${NFS_IP} --set nfs.path=/nfs --name nfs --namespace nfs
+    helm install nfs stable/nfs-client-provisioner --set nfs.server=${NFS_IP} --set nfs.path=/nfs  --namespace nfs
     kubectl patch storageclass nfs-client -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 fi
 
