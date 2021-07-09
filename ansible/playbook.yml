@@ -4,6 +4,7 @@
      - { role: geerlingguy.docker, docker_service_state: started, docker_service_enabled: true, docker_restart_handler_state: restarted, docker_install_compose: true }
      - { role: nephelaiio.vim  }
      - { role: howtodojo.htop  }
+     - { role: adriagalin.screen  }
   tasks:
     - name: clone configs
       become: yes
