@@ -1,11 +1,14 @@
 - hosts: all
   roles:
      - { role: vaulttec.zsh, zsh_ohmy_theme: robbyrussell, zsh_ohmy_plugins: [git, docker, docker-compose, kubectl] }
-     - { role: geerlingguy.docker, docker_service_state: started, docker_service_enabled: true, docker_restart_handler_state: restarted, docker_install_compose: true }
-     - { role: nephelaiio.vim  }
-     - { role: howtodojo.htop  }
-     - { role: adriagalin.screen  }
+    #  - { role: geerlingguy.docker, docker_service_state: started, docker_service_enabled: true, docker_restart_handler_state: restarted, docker_install_compose: true }
   tasks:
+    - name: Install a list of packages
+      apt:
+        pkg:
+        - vim
+        - htop
+        - screen
     - name: clone configs
       become: yes
       git:
@@ -16,3 +19,4 @@
         path: .zshrc
         line: 'source /home/configs/ansible/aliases'
         insertbefore: BOF
+

@@ -1,0 +1,7 @@
+---
+all:
+  hosts:
+    db-servers:
+      ansible_user: asc686f61
+      ansible_host: 192.168.1.9
+      ansible_python_interpreter: /usr/bin/python3

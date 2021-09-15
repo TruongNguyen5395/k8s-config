@@ -24,41 +24,10 @@ qr(){
 	qrencode -o - "$1" | display
 }
 
-get_server(){
-    echo `cat hosts.conf| grep '^'$1 | cut -d' ' -f2`
-}
-
-get_server_port(){
-    echo `cat hosts.conf| grep '^'$1 | cut -d' ' -f3`
-}
-
-
-rsyncs () {
-    server=$(get_server "$1")
-    target=$(dirname "$2")
-
-    if [[ "${@#-r}" = "$@" ]]
-    then
-        echo rsync -avhz $2 $1:$target
-        rsync -avhz $2 $server:$target
-    else
-        echo rsync -avhz $1:$2 $target
-        rsync -avhz $server:$2 $target
-    fi
-}
-
 sshuttles(){
     server=$(get_server "$1")
     sshuttle -r $server 0/0
 }
-
-sshs(){
-    server=$(get_server "$1")
-    port=$(get_server_port "$1")
-    echo $server
-    ssh -t $server -p $port
-}
-
 
 backup () {
     for file in "$@"; do
@@ -73,18 +42,12 @@ backup () {
     done
 }
 
-
-connect_private(){
-    ssh -f -N -R $1:localhost:22 administrator@117.6.16.176 -P 93
-}
-
 alias dc-stop-all='sudo docker stop $(sudo docker ps -aq)'
 alias dc-ps='sudo docker ps'
 alias dc-rm-all='sudo docker rm $(sudo docker ps -aq)'
 alias dc-rm-exited='sudo docker ps -a | grep Exit | cut -d " " -f 1 | xargs sudo docker rm'
 alias dc-rmi-none='sudo docker rmi $(sudo docker images -f "dangling=true" -q)'
 alias dc-rmi-all='sudo docker rmi $(sudo docker images -aq)'
-alias dc-stats='sudo docker stats'
 alias dc-rmi-5='docker rmi $(docker images -q | tail -n +5)'
 
 
@@ -92,5 +55,4 @@ alias tarc='tar -czvf '
 alias tarx='tar -k -xzvf '
 alias pip3='sudo python3 -m pip '
 alias kcn='kubectl config set-context $(kubectl config current-context) --namespace '
-alias ktop='kubectl get nodes --no-headers | awk '\''{print $1}'\'' | xargs -I {} sh -c '\''echo {} ; kubectl describe node {} | grep Allocated -A 5 | grep -ve Event -ve Allocated -ve percent -ve -- ; echo '\'''
 alias chmodall='sudo chmod -R 777 '
