@@ -24,11 +24,6 @@ qr(){
 	qrencode -o - "$1" | display
 }
 
-sshuttles(){
-    server=$(get_server "$1")
-    sshuttle -r $server 0/0
-}
-
 backup () {
     for file in "$@"; do
         local new=${file}_$(date '+%Y-%m-%d_%H-%M-%S')
