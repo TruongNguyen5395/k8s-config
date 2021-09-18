@@ -35,7 +35,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "ansible" do |ansible| 
     # ansible.verbose = "-vvvv"
-    # ansible.galaxy_role_file = 'requirements.yml'
+    ansible.galaxy_role_file = 'requirements.yml'
     ansible.playbook = "playbook.yml"
     ansible.limit = "all"
     # ansible.tags = ["k3s-master-config"]
