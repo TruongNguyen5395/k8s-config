@@ -1,6 +1,6 @@
 
 ---
-- hosts: db-servers
+- hosts: nfs
   become: yes
   roles:
     - role: geerlingguy.nfs
@@ -18,7 +18,7 @@
   tags:
     - "k3s"
  
-- hosts: k3s_cluster 
+- hosts: k3s_cluster
   become: yes
   
   tasks:
@@ -32,7 +32,7 @@
     - "k3s"
     - "k3s-config"
 
-- hosts: k3s_master
+- hosts: kube-0
   become: yes
   tags:
     - "k3s-config"
@@ -54,19 +54,15 @@
     command: mkdir -p /root/.kube/
 
   - name: Move k3s config file into place
-    command: cp /etc/rancher/k3s/k3s.yaml /root/.kube/
+    command: cp /etc/rancher/k3s/k3s.yaml /root/.kube/config
+  
 
-  - name: Move k3s config file into place
-    command: mv /root/.kube/k3s.yaml /root/.kube/config
- 
-  # - name: test
-  #   debug:
-  #     msg: "{{  hostvars[groups['db-servers'][0]] }} "  
   # - name: debug 
   #   local_action: 
   #     module: copy 
-  #     content: "{{  hostvars[groups['db-servers'][0]] }}"
-  #     dest: /tmp/whatever.out
+  #     content: "{{  hostvars[groups['nfs_server'][0]] }}"
+  #     dest: ./hostvars.json
+
   - name: copy nfs storage class
     copy:
       dest: "/var/lib/rancher/k3s/server/manifests/nfs.yml"
@@ -76,4 +72,4 @@
     ansible.builtin.replace:
       path: /var/lib/rancher/k3s/server/manifests/nfs.yml
       regexp: "x.x.x.x"
-      replace: " {{  hostvars[groups['db-servers'][0]]['ansible_eth1']['ipv4']['address'] }}"
+      replace: "{{  hostvars[groups['nfs_server'][0]]['ansible_host'] }}"
