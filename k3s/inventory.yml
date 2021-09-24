@@ -1,16 +1,25 @@
 ---
-nfs_server:
-  hosts:
-    nfs:
-      ansible_user: vagrant
-      ansible_host: 10.10.1.2
-      nfs_exports: ["/home/public *(rw,sync,no_root_squash)"]
+# nfs_server:
+#   hosts:
+#     nfs:
+#       ansible_user: vagrant
+#       ansible_host: 192.168.1.20
+#       nfs_exports: ["/home/public *(rw,sync,no_root_squash)"]
 
 k3s_cluster:
   hosts:
     kube-0:
-      ansible_user: vagrant
-      ansible_host: 10.10.1.3
+      ansible_user: vagrant 
+      ansible_host: 192.168.1.20
+      ansible_python_interpreter: /usr/bin/python3
+      # k3s_control_node: true
     kube-1:
       ansible_user: vagrant
-      ansible_host: 10.10.1.4
+      ansible_host: 192.168.1.21
+      ansible_python_interpreter: /usr/bin/python3
+      # k3s_control_node: true
+    kube-2:
+      ansible_user: vagrant
+      ansible_host: 192.168.1.22
+      ansible_python_interpreter: /usr/bin/python3
+      # k3s_control_node: true

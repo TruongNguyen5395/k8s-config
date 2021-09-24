@@ -20,4 +20,4 @@
         insertbefore: BOF
   roles:
     - { role: vaulttec.zsh, zsh_ohmy_theme: robbyrussell, zsh_ohmy_plugins: [git, docker, docker-compose, kubectl], }
-    # - { role: geerlingguy.docker, docker_service_state: started, docker_service_enabled: true, docker_restart_handler_state: restarted, docker_install_compose: false, become: yes, }
+    - { role: geerlingguy.docker, docker_service_state: started, docker_service_enabled: true, docker_restart_handler_state: restarted, docker_install_compose: false, become: yes, }
