@@ -1,11 +1,11 @@
 ---
-# - hosts: nfs
-#   become: yes
-#   roles:
-#     - role: geerlingguy.nfs
-#       nfs_exports: [ "/home/public *(rw,sync,no_root_squash)" ]
-#   tags:
-#     - "nfs"
+- hosts: nfs
+  become: yes
+  roles:
+    - role: geerlingguy.nfs
+      nfs_exports: ["/home/public *(rw,sync,no_root_squash)"]
+  tags:
+    - "nfs"
 
 - name: Build a cluster with a single control node
   hosts: k3s_cluster
@@ -20,63 +20,62 @@
     k3s_control_node_address: "192.168.1.20"
     k3s_server:
       advertise-address: 192.168.1.20
+      datastore-endpoint: postgres://postgres:2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm@192.168.1.9:5432/rkedb?sslmode=disable
     k3s_agent:
       node-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
       node-external-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
 
   roles:
     - role: xanmanning.k3s
-# - hosts: k3s_cluster
-#   become: yes
+- hosts: k3s_cluster
+  become: yes
+  tags:
+    - "k3s"
+    - "k3s-config"
+  tasks:
+    - name: Install a list of packages
+      become: true
+      apt:
+        pkg:
+          - cifs-utils
+          - nfs-common
+    - name: Retrieve helm binary archive.
+      unarchive:
+        src: https://get.helm.sh/helm-v3.2.1-linux-amd64.tar.gz
+        dest: /tmp
+        creates: /usr/local/bin/helm
+        remote_src: yes
 
-#   tasks:
-#   - name: Install a list of packages
-#     become: true
-#     apt:
-#       pkg:
-#         - cifs-utils
-#         - nfs-common
-#   tags:
-#     - "k3s"
-#     - "k3s-config"
+    - name: Move helm binary into place
+      command: cp /tmp/linux-amd64/helm /usr/local/bin/helm
+      args:
+        creates: /usr/local/bin/helm
 
-# - hosts: kube-0
-#   become: yes
-#   tags:
-#     - "k3s-config"
-#     - "k3s-master-config"
-#   tasks:
-#   - name: Retrieve helm binary archive.
-#     unarchive:
-#       src: https://get.helm.sh/helm-v3.2.1-linux-amd64.tar.gz
-#       dest: /tmp
-#       creates: /usr/local/bin/helm
-#       remote_src: yes
+    - name: Move k3s config file into place
+      command: mkdir -p /root/.kube/
 
-#   - name: Move helm binary into place
-#     command: cp /tmp/linux-amd64/helm /usr/local/bin/helm
-#     args:
-#       creates: /usr/local/bin/helm
+    - name: Move k3s config file into place
+      command: cp /etc/rancher/k3s/k3s.yaml /root/.kube/config
 
-#   - name: Move k3s config file into place
-#     command: mkdir -p /root/.kube/
 
-#   - name: Move k3s config file into place
-#     command: cp /etc/rancher/k3s/k3s.yaml /root/.kube/config
+  # - name: debug
+  #   local_action:
+  #     module: copy
+  #     content: "{{  hostvars[groups['nfs_server'][0]] }}"
+  #     dest: ./hostvars.json
+- hosts: kube-0
+  become: yes
+  tags:
+    - "k3s-config"
+    - "k3s-master-config"
+  tasks:
+    - name: copy nfs storage class
+      copy:
+        dest: "/var/lib/rancher/k3s/server/manifests/nfs.yml"
+        src: "./nfs.yml"
 
-#   # - name: debug
-#   #   local_action:
-#   #     module: copy
-#   #     content: "{{  hostvars[groups['nfs_server'][0]] }}"
-#   #     dest: ./hostvars.json
-
-#   - name: copy nfs storage class
-#     copy:
-#       dest: "/var/lib/rancher/k3s/server/manifests/nfs.yml"
-#       src: "./nfs.yml"
-
-#   - name: replace nfs ip
-#     ansible.builtin.replace:
-#       path: /var/lib/rancher/k3s/server/manifests/nfs.yml
-#       regexp: "x.x.x.x"
-#       replace: "{{  hostvars[groups['nfs_server'][0]]['ansible_host'] }}"
+    - name: replace nfs ip
+      ansible.builtin.replace:
+        path: /var/lib/rancher/k3s/server/manifests/nfs.yml
+        regexp: "x.x.x.x"
+        replace: "{{  hostvars[groups['nfs_server'][0]]['ansible_host'] }}"
