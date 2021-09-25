@@ -1,6 +1,3 @@
 ---
 - src: vaulttec.zsh
 - src: geerlingguy.docker
-- src: nephelaiio.vim
-- src: howtodojo.htop
-- src: adriagalin.screen

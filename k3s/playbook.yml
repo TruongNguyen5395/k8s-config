@@ -15,20 +15,19 @@
     iface: eth1
     k3s_become_for_all: true
     k3s_build_cluster: true
-    # k3s_etcd_datastore: true
     k3s_use_experimental: true
     k3s_control_node_address: "192.168.1.20"
-    
-    docker: true
+
     k3s_server:
       write-kubeconfig-mode: 644
-      flannel-backend: 'vxlan'
+      flannel-backend: "vxlan"
       flannel-iface: eth1
       advertise-address: 192.168.1.20
-      datastore-endpoint: postgres://postgres:2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm@192.168.1.9:5432/rkedb_5?sslmode=disable
+      # datastore-endpoint: postgres://postgres:2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm@192.168.1.9:5432/rkedb_6?sslmode=disable
     k3s_agent:
       node-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
       node-external-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
+      flannel-iface: eth1
 
   roles:
     - role: xanmanning.k3s
@@ -55,13 +54,12 @@
       command: cp /tmp/linux-amd64/helm /usr/local/bin/helm
       args:
         creates: /usr/local/bin/helm
- 
+
     - name: line insert
       lineinfile:
         path: .zshrc
         line: "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml"
         insertbefore: BOF
-
 
   # - name: debug
   #   local_action:
@@ -84,6 +82,14 @@
         path: /var/lib/rancher/k3s/server/manifests/nfs.yml
         regexp: "x.x.x.x"
         replace: "{{  hostvars[groups['nfs_server'][0]]['ansible_host'] }}"
+
+    - name: patch nfs to default
+      command: |
+        kubectl patch storageclass nfs -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+
+    - name: patch local-path to non default
+      command: |
+        kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
 
     - name: Add a repository
       community.kubernetes.helm_repository:
