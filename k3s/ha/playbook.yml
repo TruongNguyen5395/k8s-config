@@ -23,7 +23,7 @@
       flannel-backend: "vxlan"
       flannel-iface: eth1
       advertise-address: 192.168.1.20
-      # datastore-endpoint: postgres://postgres:2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm@192.168.1.9:5432/rkedb_6?sslmode=disable
+      datastore-endpoint: postgres://postgres:2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm@192.168.1.9:5432/rkedb_6?sslmode=disable
     k3s_agent:
       node-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
       node-external-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
@@ -61,11 +61,6 @@
         line: "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml"
         insertbefore: BOF
 
-  # - name: debug
-  #   local_action:
-  #     module: copy
-  #     content: "{{  hostvars[groups['nfs_server'][0]] }}"
-  #     dest: ./hostvars.json
 - hosts: kube-0
   become: yes
   tags:

@@ -1,3 +1,5 @@
 ---
-- src: xanmanning.k3s
-- src: geerlingguy.nfs
+roles:
+  # Install a role from Ansible Galaxy.
+  - name: xanmanning.k3s 
+  - name: geerlingguy.nfs
