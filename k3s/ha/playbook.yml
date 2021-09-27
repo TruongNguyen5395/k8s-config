@@ -12,37 +12,51 @@
   become: yes
   strategy: linear
   vars:
-    iface: eth1
+    iface: "{{ hostvars[inventory_hostname]['flannel-iface']}}"
     k3s_become_for_all: true
     k3s_build_cluster: true
     k3s_use_experimental: true
-    k3s_control_node_address: "192.168.1.20"
+    k3s_control_node_address: "45.77.19.225"
 
     k3s_server:
       write-kubeconfig-mode: 644
       flannel-backend: "vxlan"
-      flannel-iface: eth1
-      advertise-address: 192.168.1.20
-      datastore-endpoint: postgres://postgres:2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm@192.168.1.9:5432/rkedb_6?sslmode=disable
+      flannel-iface: "{{ iface }}"
+      advertise-address: 45.77.19.225
+      datastore-endpoint: postgres://postgres:2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm@45.77.19.225:5432/rkedb_9?sslmode=disable
     k3s_agent:
       node-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
       node-external-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
-      flannel-iface: eth1
+      flannel-iface: "{{ iface }}"
 
   roles:
     - role: xanmanning.k3s
+  tags:
+    - "k3s"
 - hosts: k3s_cluster
   become: yes
   tags:
-    - "k3s"
+
     - "k3s-config"
   tasks:
-    - name: Install a list of packages
-      become: true
-      apt:
-        pkg:
-          - cifs-utils
-          - nfs-common
+    - name: install nfs client
+      action: apt pkg=nfs-common state=present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  
+    - name: install nfs client
+      action: yum pkg=nfs-utils state=present
+      when: ansible_distribution == 'Centos'
+    
+    # - name: debug
+    #   debug:
+    #     msg:  "{{ }}"
+    #     # msg:  "{{ ansible_default_ipv4['address'] }}"
+    #     # 
+
+    #   tags:
+    #      - xxx
+    
+  
     - name: Retrieve helm binary archive.
       unarchive:
         src: https://get.helm.sh/helm-v3.2.1-linux-amd64.tar.gz
@@ -70,7 +84,7 @@
     - name: copy nfs storage class
       copy:
         dest: "/var/lib/rancher/k3s/server/manifests/nfs.yml"
-        src: "./nfs.yml"
+        src: "../nfs.yml"
 
     - name: replace nfs ip
       ansible.builtin.replace:

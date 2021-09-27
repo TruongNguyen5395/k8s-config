@@ -1,18 +1,40 @@
 - hosts: all
   tasks:
-    - name: Install a list of packages
-      become: true
-      apt:
-        pkg:
-          - vim
-          - htop
-          - screen
-          - trash-cli
+    - name: Install packages
+      with_items: package_list
+      action: "{{ ansible_pkg_mgr }} state=installed name={{ item }}"
+      package_list:
+      - vim 
+      - htop
+      - screen
+      - trash-cli
+      
+    # - name: Install a list of packages
+    #   become: true
+    #   apt:
+    #     pkg:
+    #       - vim
+    #       - htop
+    #       - screen
+    #       - trash-cli
+    #   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+ 
+    # - name: Install a list of packages
+    #   become: true
+    #   yum:
+    #     pkg:
+    #       - vim
+    #       - htop
+    #       - screen
+    #       - trash-cli
+    #   when: ansible_distribution == 'Centos'
+
     - name: clone configs
       become: yes
       git:
         repo: https://github.com/ASC689561/k8s-config.git
         dest: /home/configs
+        force: true
     - name: line insert
       lineinfile:
         path: .zshrc
