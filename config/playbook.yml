@@ -1,9 +1,11 @@
 - hosts: all
+  become: true
   tasks:
     - name: Install packages
-      with_items: package_list
-      action: "{{ ansible_pkg_mgr }} state=installed name={{ item }}"
-      package_list:
+      # with_items: package_list
+      action: >
+        {{ ansible_pkg_mgr }} state=present name={{ item }}
+      with_items:
       - vim 
       - htop
       - screen
