@@ -23,7 +23,7 @@
       flannel-backend: "vxlan"
       flannel-iface: "{{ iface }}"
       advertise-address: 172.105.230.91
-      datastore-endpoint: postgres://postgres:2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm@172.105.230.91:5432/rkedb_11?sslmode=disable
+      datastore-endpoint: postgres://postgres:2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm@172.105.230.91:5432/k3s_db4?sslmode=disable
     k3s_agent:
       node-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
       node-external-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
@@ -103,14 +103,14 @@
         repo_url: https://charts.helm.sh/incubator
 
 
-    - name: patch nfs to default
-      tags:
-        - path-nfs
-      command: |
-        kubectl patch storageclass nfs -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+    # - name: patch nfs to default
+    #   tags:
+    #     - path-nfs
+    #   command: |
+    #     kubectl patch storageclass nfs -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 
-    - name: patch local-path to non default
-      tags:
-        - path-nfs
-      command: |
-        kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+    # - name: patch local-path to non default
+    #   tags:
+    #     - path-nfs
+    #   command: |
+    #     kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
