@@ -16,14 +16,14 @@
     k3s_become_for_all: true
     k3s_build_cluster: true
     k3s_use_experimental: true
-    k3s_control_node_address: 172.105.230.91
+    k3s_control_node_address: 45.77.19.225
 
     k3s_server:
       write-kubeconfig-mode: 644
       flannel-backend: "vxlan"
       flannel-iface: "{{ iface }}"
       advertise-address: "{{ vars['ansible_'~iface].ipv4.address }}"
-      datastore-endpoint: http://172.105.230.91:2379
+      datastore-endpoint: http://45.77.19.225:2379
       # datastore-endpoint: postgres://postgres:2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm@172.105.230.91:5432/k3s_db5?sslmode=disable
       disable:
         - traefik
@@ -45,21 +45,11 @@
     - name: install nfs client
       action: apt pkg=nfs-common state=present
       when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-  
+
     - name: install nfs client
       action: yum pkg=nfs-utils state=present
       when: ansible_distribution == 'Centos'
-    
-    # - name: debug
-    #   debug:
-    #     msg:  "{{ }}"
-    #     # msg:  "{{ ansible_default_ipv4['address'] }}"
-    #     # 
 
-    #   tags:
-    #      - xxx
-    
-  
     - name: Retrieve helm binary archive.
       unarchive:
         src: https://get.helm.sh/helm-v3.2.1-linux-amd64.tar.gz
@@ -105,7 +95,6 @@
         name: incubator
         repo_url: https://charts.helm.sh/incubator
 
-
     - name: patch nfs to default
       retries: 10
       delay: 3
@@ -113,4 +102,3 @@
         - path-nfs
       command: |
         kubectl patch storageclass nfs -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
- 
