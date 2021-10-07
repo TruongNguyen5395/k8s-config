@@ -1,17 +1,26 @@
 version: "3.7"
 
 services:
- 
-  timescale:
-    image: timescale/timescaledb:2.0.1-pg12
-    container_name: timescale
-    restart: always
-    ports:
-      - 5432:5432
-    command: postgres -c 'max_connections=1027'
+  etcd:
+    image: docker.io/bitnami/etcd:3
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm
+      - ALLOW_NONE_AUTHENTICATION=yes
+    ports:
+      - 2379:2379
+      - 2380:2380
     volumes:
-      - ./postgresql:/var/lib/postgresql/data
+      - ./etcd_data:/bitnami/etcd
+      
+  # timescale:
+  #   image: timescale/timescaledb:2.0.1-pg12
+  #   container_name: timescale
+  #   restart: always
+  #   ports:
+  #     - 5432:5432
+  #   command: postgres -c 'max_connections=1027'
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm
+  #   volumes:
+  #     - ./postgresql:/var/lib/postgresql/data
  
