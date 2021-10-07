@@ -17,16 +17,17 @@
     k3s_build_cluster: true
     k3s_use_experimental: true
     k3s_control_node_address: 172.105.230.91
-    k3s_no_local_storage: true
 
     k3s_server:
       write-kubeconfig-mode: 644
       flannel-backend: "vxlan"
       flannel-iface: "{{ iface }}"
-      advertise-address: 172.105.230.91
-      datastore-endpoint: postgres://postgres:2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm@172.105.230.91:5432/k3s_db5?sslmode=disable
+      advertise-address: "{{ vars['ansible_'~iface].ipv4.address }}"
+      datastore-endpoint: http://172.105.230.91:2379
+      # datastore-endpoint: postgres://postgres:2vTv2rNxQteHjMjQY6iAxxl2MgCEu4hm@172.105.230.91:5432/k3s_db5?sslmode=disable
       disable:
         - traefik
+        - local-storage
     k3s_agent:
       node-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
       node-external-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
@@ -112,11 +113,4 @@
         - path-nfs
       command: |
         kubectl patch storageclass nfs -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-
-    - name: patch local-path to non default
-      retries: 10
-      delay: 3
-      tags:
-        - path-nfs
-      command: |
-        kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+ 
