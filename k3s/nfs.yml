@@ -11,3 +11,4 @@ spec:
     nfs.server: x.x.x.x
     nfs.path: "/home/public"
     storageClass.name: nfs
+    storageClass.reclaimPolicy: Retain

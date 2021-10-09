@@ -12,38 +12,44 @@
   become: yes
   strategy: linear
   vars:
-    iface: eno1
+    iface: "{{ hostvars[inventory_hostname]['flannel-iface']}}"
     k3s_become_for_all: true
     k3s_build_cluster: true
     k3s_use_experimental: true
-    k3s_control_node_address: "192.168.1.9"
+    k3s_control_node_address: "45.77.19.225"
 
     k3s_server:
       write-kubeconfig-mode: 644
       flannel-backend: "vxlan"
-      flannel-iface: eno1
-      advertise-address: 192.168.1.9
+      flannel-iface: "{{ iface }}"
+      advertise-address: 45.77.19.225
+      disable:
+        - traefik
+        - local-storage
     k3s_agent:
       node-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
       node-external-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
-      flannel-iface: eno1
-      kubelet-arg: eviction-hard=memory.available<500Mi,nodefs.available<1Gi
+      flannel-iface: "{{ iface }}"
+      kubelet-arg: eviction-hard=memory.available<50Mi,nodefs.available<1Gi
 
   roles:
     - role: xanmanning.k3s
-
+  tags:
+    - "k3s"
 - hosts: k3s_cluster
   become: yes
   tags:
     - "k3s"
     - "k3s-config"
   tasks:
-    - name: Install a list of packages
-      become: true
-      apt:
-        pkg:
-          - cifs-utils
-          - nfs-common
+    - name: install nfs client
+      action: apt pkg=nfs-common state=present
+      when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+    - name: install nfs client
+      action: yum pkg=nfs-utils state=present
+      when: ansible_distribution == 'Centos'
+
     - name: Retrieve helm binary archive.
       unarchive:
         src: https://get.helm.sh/helm-v3.2.1-linux-amd64.tar.gz
@@ -79,14 +85,6 @@
         regexp: "x.x.x.x"
         replace: "{{  hostvars[groups['nfs_server'][0]]['ansible_host'] }}"
 
-    - name: patch nfs to default
-      command: |
-        kubectl patch storageclass nfs -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-
-    - name: patch local-path to non default
-      command: |
-        kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
-
     - name: Add a repository
       community.kubernetes.helm_repository:
         name: stable
@@ -96,3 +94,7 @@
       community.kubernetes.helm_repository:
         name: incubator
         repo_url: https://charts.helm.sh/incubator
+
+    - name: patch nfs to default
+      command: |
+        kubectl patch storageclass nfs -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
