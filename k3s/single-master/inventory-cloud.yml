@@ -3,7 +3,7 @@ nfs_server:
   hosts:
     nfs:
       ansible_user: root
-      ansible_host: 45.77.19.225
+      ansible_host: 172.105.230.91
       nfs_exports: ["/home/public *(rw,sync,no_root_squash,no_subtree_check)"]
       ansible_python_interpreter: /usr/bin/python3
 
