@@ -9,21 +9,20 @@ nfs_server:
 
 k3s_cluster:
   hosts:
-    kube-0:
-      ansible_user: root 
-      ansible_host: 45.77.19.225
+    kube-3:
+      ansible_user: root
+      ansible_host: 139.162.35.185
       ansible_python_interpreter: /usr/bin/python3
-      k3s_control_node: true
-      flannel-iface: enp1s0
-      node-ip: 45.77.19.225
-      node-external-ip: 45.77.19.225
-      
+      k3s_control_node: false
+      flannel-iface: eth0
+      node-ip: 139.162.35.185
+      node-external-ip: 139.162.35.185  
 
     kube-1:
       ansible_user: root
       ansible_host: 172.105.230.91
       ansible_python_interpreter: /usr/bin/python3
-      k3s_control_node: false
+      k3s_control_node: true
       flannel-iface: eth0
       node-ip: 172.105.230.91
       node-external-ip: 172.105.230.91
@@ -36,3 +35,5 @@ k3s_cluster:
       flannel-iface: eth0
       node-ip: 139.162.44.144
       node-external-ip: 139.162.44.144
+      
+
