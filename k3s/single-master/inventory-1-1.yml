@@ -3,7 +3,7 @@ nfs_server:
   hosts:
     nfs:
       ansible_user: asc686f61
-      ansible_host: 192.168.1.215
+      ansible_host: 9.9.9.9
       ansible_port: 22
       nfs_exports: ["/home/public *(rw,sync,no_root_squash,no_subtree_check)"]
       ansible_python_interpreter: /usr/bin/python3
@@ -12,12 +12,12 @@ k3s_cluster:
   hosts:
     kube-0:
       ansible_user: asc686f61 
-      ansible_host: 192.168.1.215
+      ansible_host: 9.9.9.9
       ansible_port: 22
       ansible_python_interpreter: /usr/bin/python3
       k3s_control_node: true
-      flannel-iface: wls1
-      node-ip: 192.168.1.215
-      node-external-ip: 192.168.1.215
+      flannel-iface: "vr-br"
+      node-ip: 9.9.9.9
+      node-external-ip: 9.9.9.9
       
  

@@ -21,6 +21,8 @@
   strategy: linear
   vars:
     iface: "{{ hostvars[inventory_hostname]['flannel-iface']}}"
+    ip: "{{ hostvars[inventory_hostname]['node-ip']}}"
+    eip: "{{ hostvars[inventory_hostname]['node-external-ip']}}"
     k3s_become_for_all: true
     k3s_build_cluster: true
     k3s_use_experimental: true
@@ -31,13 +33,14 @@
       flannel-backend: "vxlan"
       flannel-iface: "{{ iface }}"
       advertise-address: "{{ hostvars[groups['k3s_cluster'][0]]['ansible_host'] }}" 
+      kubelet-arg: eviction-hard=memory.available<50Mi,nodefs.available<1Gi
       disable:
-        - traefik
+        # - traefik
         - local-storage
 
     k3s_agent:
-      node-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
-      node-external-ip: "{{ vars['ansible_'~iface].ipv4.address }}"
+      node-ip: "{{ ip }}"
+      node-external-ip: "{{ eip }}"
       flannel-iface: "{{ iface }}"
       kubelet-arg: eviction-hard=memory.available<50Mi,nodefs.available<1Gi
 
