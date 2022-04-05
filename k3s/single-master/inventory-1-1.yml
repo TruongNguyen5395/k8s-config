@@ -1,0 +1,38 @@
+---
+nfs_server:
+  hosts:
+    nfs:
+<<<<<<< HEAD:k3s/single-master/inventory-single-node.yml
+      ansible_user: root
+      ansible_host: 192.168.1.22
+=======
+      ansible_user: asc686f61
+      ansible_host: 9.9.9.9
+      ansible_port: 22
+>>>>>>> 81734a223dae2b8fd78674230d843453ec84a647:k3s/single-master/inventory-1-1.yml
+      nfs_exports: ["/home/public *(rw,sync,no_root_squash,no_subtree_check)"]
+      ansible_python_interpreter: /usr/bin/python3
+
+k3s_cluster:
+  hosts:
+    kube-0:
+<<<<<<< HEAD:k3s/single-master/inventory-single-node.yml
+      ansible_user: root 
+      ansible_host: 192.168.1.22
+      ansible_python_interpreter: /usr/bin/python3
+      k3s_control_node: true
+      flannel-iface: eno1
+      node-ip: 192.168.1.22
+      node-external-ip: 192.168.1.22
+=======
+      ansible_user: asc686f61 
+      ansible_host: 9.9.9.9
+      ansible_port: 22
+      ansible_python_interpreter: /usr/bin/python3
+      k3s_control_node: true
+      flannel-iface: "vr-br"
+      node-ip: 9.9.9.9
+      node-external-ip: 9.9.9.9
+>>>>>>> 81734a223dae2b8fd78674230d843453ec84a647:k3s/single-master/inventory-1-1.yml
+      
+ 
